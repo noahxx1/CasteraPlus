@@ -55,9 +55,7 @@ export default function MeetinRoom() {
   // إنشاء القناة ومشاهدتها
   useEffect(() => {
     if (!chatClient) return;
-    const chan = chatClient.channel("messaging", meetingId, {
-      name: `Meeting ${meetingId}`,
-    });
+    const chan = chatClient.channel("messaging", meetingId);
     chan.watch().then(() => setChannel(chan));
   }, [chatClient, meetingId]);
 
@@ -69,7 +67,7 @@ export default function MeetinRoom() {
   const CustomMessageList = () => {
     const { messages } = useChannelStateContext();
 
-    const filteredMessages = messages.filter(
+    const filteredMessages = messages?.filter(
       (msg) => new Date(msg.created_at) > sessionStart.current
     );
 
