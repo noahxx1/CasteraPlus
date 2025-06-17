@@ -73,15 +73,7 @@ export const StreamProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <StreamVideo client={videoClient}>
-      <Chat client={chatClient}>
-        <Channel>
-          <Window>
-            <MessageList />
-            <MessageInput />
-          </Window>
-        </Channel>
-        {children}
-      </Chat>
+      <Chat client={chatClient}>{children}</Chat>
     </StreamVideo>
   );
 };

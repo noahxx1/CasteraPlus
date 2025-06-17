@@ -1,4 +1,3 @@
-// components/MeetinRoom.tsx
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -34,7 +33,6 @@ import {
 import Loader from "./Loader";
 import EndCallButton from "./EndCallButton";
 
-// نوع تخطيط الفيديو
 type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
 export default function MeetinRoom() {
@@ -48,14 +46,17 @@ export default function MeetinRoom() {
   const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
   const router = useRouter();
-
-  // ⏱️ Capture session start time
   const sessionStart = useRef(new Date());
 
-  // إنشاء القناة ومشاهدتها
+  // ✅ FIXED: Add current user to the channel members
+
   useEffect(() => {
-    if (!chatClient) return;
-    const chan = chatClient.channel("messaging", meetingId);
+    if (!chatClient || !chatClient.userID) return;
+
+    const chan = chatClient.channel("messaging", meetingId, {
+      members: [chatClient.userID],
+    });
+
     chan.watch().then(() => setChannel(chan));
   }, [chatClient, meetingId]);
 
@@ -63,7 +64,6 @@ export default function MeetinRoom() {
     return <Loader />;
   }
 
-  // 👥 Custom MessageList that filters by session time
   const CustomMessageList = () => {
     const { messages } = useChannelStateContext();
 
@@ -74,7 +74,6 @@ export default function MeetinRoom() {
     return <MessageList messages={filteredMessages} hideDeletedMessages />;
   };
 
-  // اختيار تخطيط الفيديو
   const CallLayout = () => {
     switch (layout) {
       case "grid":
@@ -87,8 +86,8 @@ export default function MeetinRoom() {
   };
 
   return (
-    <section className="relative flex h-screen max-sm:flex-col w-full text-white overflow-hidden ">
-      {/* لوحة الدردشة */}
+    <section className="relative flex h-screen max-sm:flex-col w-full text-white overflow-hidden">
+      {/* Chat Panel */}
       <div
         className={cn(
           "h-screen border-r border-gray-800 absolute top-0 left-0 z-10 transition-all max-sm:w-screen",
@@ -102,7 +101,7 @@ export default function MeetinRoom() {
         <StreamChannel channel={channel}>
           <Window>
             <div className="h-full flex flex-col">
-              {/* 🚨 Add this button for small screens */}
+              {/* ✕ Close button for mobile */}
               <button
                 onClick={() => setShowChat(false)}
                 className="sm:hidden absolute top-2 right-2 z-50 text-white bg-gray-700 hover:bg-gray-600 rounded-full p-2"
@@ -131,7 +130,7 @@ export default function MeetinRoom() {
         </StreamChannel>
       </div>
 
-      {/* محتوى الفيديو */}
+      {/* Video Content */}
       <div
         className={cn(
           "relative size-full flex-center transition-all duration-300",
@@ -144,7 +143,7 @@ export default function MeetinRoom() {
           <CallLayout />
         </div>
 
-        {/* قائمة المشاركين */}
+        {/* Participants List */}
         <div
           className={cn("h-screen hidden ml-2 absolute top-0 right-0 z-20", {
             "show-block": showParticipants,
@@ -154,7 +153,7 @@ export default function MeetinRoom() {
         </div>
       </div>
 
-      {/* شريط التحكم */}
+      {/* Bottom Controls */}
       <div
         className={cn(
           "fixed bottom-0 flex-center gap-5 w-full py-2 flex-wrap transition-all duration-300",
@@ -166,7 +165,7 @@ export default function MeetinRoom() {
       >
         <CallControls onLeave={() => router.push("/")} />
 
-        {/* اختيار التخطيط */}
+        {/* Layout Selector */}
         <DropdownMenu>
           <div className="flex items-center">
             <DropdownMenuTrigger className="cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]">
@@ -192,7 +191,7 @@ export default function MeetinRoom() {
 
         <CallStatsButton />
 
-        {/* تبديل عرض المشاركين */}
+        {/* Toggle Participants */}
         <button
           onClick={() => setShowParticipants((v) => !v)}
           className="cursor-pointer transition duration-300 rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]"
@@ -200,7 +199,7 @@ export default function MeetinRoom() {
           <Users size={20} className="text-white" />
         </button>
 
-        {/* تبديل الدردشة */}
+        {/* Toggle Chat */}
         <button
           onClick={() => setShowChat((v) => !v)}
           className={cn(
