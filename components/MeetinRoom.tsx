@@ -42,13 +42,19 @@ export default function MeetinRoom() {
   const [channel, setChannel] = useState<any>(null);
   const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
   const [showParticipants, setShowParticipants] = useState(false);
-  const [showChat, setShowChat] = useState(true);
+
+  // ✅ Chat initially hidden on mobile (<640px)
+  const [showChat, setShowChat] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth >= 640;
+    }
+    return true;
+  });
+
   const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
   const router = useRouter();
   const sessionStart = useRef(new Date());
-
-  // ✅ FIXED: Add current user to the channel members
 
   useEffect(() => {
     if (!chatClient || !chatClient.userID) return;
@@ -66,11 +72,9 @@ export default function MeetinRoom() {
 
   const CustomMessageList = () => {
     const { messages } = useChannelStateContext();
-
     const filteredMessages = messages?.filter(
       (msg) => new Date(msg.created_at) > sessionStart.current
     );
-
     return <MessageList messages={filteredMessages} hideDeletedMessages />;
   };
 
@@ -108,19 +112,16 @@ export default function MeetinRoom() {
               >
                 ✕
               </button>
-
-              <ChannelHeader title="Live Chat" />
-              <div className="flex-1 overflow-auto">
+              <div className="flex-1 overflow-hidden">
                 <CustomMessageList />
               </div>
-              <div className="p-3 border-t border-gray-800">
+              <div className="p-3 bg-[#d1d9e6]">
                 <MessageInput
                   focus
                   additionalTextareaProps={{
                     placeholder: "Type your message...",
                     rows: 1,
-                    className:
-                      "bg-gray-800 text-white rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500",
+                    className: "bg-gray-800 ",
                   }}
                 />
               </div>

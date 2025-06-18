@@ -303,29 +303,20 @@ body {
 /* Custom scrollbar for chat */
 .str-chat__list {
   scrollbar-width: thin;
-  scrollbar-color: #4a5568 #2d3748;
+  scrollbar-color: #4a5568 #d1d9e6;
+  background-color: #1c1f2e !important;
 }
 
-.str-chat__list::-webkit-scrollbar {
-  width: 6px;
+.str-chat__empty-channel {
+  background-color: #1c1f2e !important;
 }
-
-.str-chat__list::-webkit-scrollbar-track {
-  background: #2d3748;
+.--str-chat__message-list-background-color {
+  background-color: #1c1f2e !important;
 }
-
-.str-chat__list::-webkit-scrollbar-thumb {
-  background-color: #4a5568;
-  border-radius: 3px;
+.str-chat__message-input {
+  background-color: #d1d9e6 !important;
 }
-
-/* Message styling */
-.str-chat__message-text-inner {
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: #2d3748;
-}
-
-.str-chat__message--me .str-chat__message-text-inner {
-  background: #3182ce;
+.str-chat__message-textarea-with-emoji-picker {
+  background-color: #bdc8d7 !important;
+  border-radius: 30px;
 }

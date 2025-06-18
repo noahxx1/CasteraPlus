@@ -19,7 +19,7 @@ const Sidebar = () => {
               href={item.route}
               key={index}
               className={cn(
-                "flex justify-start items-center gap-4 p-4 rounded-lg",
+                "flex justify-start items-center ml-2 gap-4 p-4 rounded-lg",
                 {
                   "bg-primary": isActive,
                 }
